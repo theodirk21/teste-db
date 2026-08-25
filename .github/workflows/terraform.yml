@@ -1,31 +1,27 @@
 name: Terraform - Infra DB
 
 on:
-  pull_request:
-    branches: [main]
   push:
     branches: [main]
 
 permissions:
   contents: read
-  pull-requests: write
 
 env:
   TF_VERSION: "1.7.5"
   AWS_REGION: "us-east-1"
 
 jobs:
-  terraform-plan:
+  terraform-deploy:
     environment: production
-    name: Plan
-    if: github.event_name == 'pull_request'
+    name: Plan and Apply
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -33,7 +29,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
@@ -54,33 +50,6 @@ jobs:
           TF_VAR_vpc_id: ${{ secrets.VPC_ID }}
           TF_VAR_private_subnet_ids: ${{ secrets.PRIVATE_SUBNET_IDS }}
           TF_VAR_eks_security_group_id: ${{ secrets.EKS_SECURITY_GROUP_ID }}
-
-  terraform-apply:
-    name: Apply
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configurar credenciais AWS
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform Init
-        run: |
-          terraform init \
-          -backend-config="bucket=${{ secrets.TF_BACKEND_BUCKET }}"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
