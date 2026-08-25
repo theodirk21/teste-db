@@ -23,6 +23,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Debug - checar se os secrets existem (temporário)
+        run: |
+                if [ -z "${{ secrets.AWS_SESSION_TOKEN }}" ]; then
+                echo "AWS_SESSION_TOKEN está VAZIO ou não existe"
+                else
+                echo "AWS_SESSION_TOKEN existe (tamanho: ${#TOKEN} caracteres)"
+                fi
+        env:
+                TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+ 
+
       - name: Configurar credenciais AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
