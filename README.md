@@ -1,4 +1,4 @@
-# tech-challenge-infra-db-1
+# tech-challenge-infra-db-2
 
 Infraestrutura como código (Terraform) do banco de dados gerenciado do **Tech Challenge — Fase 3**.
 
