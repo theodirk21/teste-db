@@ -1,14 +1,6 @@
 # Copie este arquivo para terraform.tfvars e preencha com os valores reais.
 # terraform.tfvars NÃO deve ser commitado (já está no .gitignore).
 
-aws_region             = "us-east-1"
-project_name           = "tech-challenge"
-environment            = "prod"
-
-# Obter esses três valores com o time responsável pela infra do EKS (Repo 3)
 vpc_id                 = "vpc-xxxxxxxx"
 private_subnet_ids     = ["subnet-aaaaaaaa", "subnet-bbbbbbbb"]
 eks_security_group_id  = "sg-xxxxxxxx"
-
-db_name                = "techchallenge"
-db_username            = "techchallenge_admin"

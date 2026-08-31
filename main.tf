@@ -17,10 +17,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-# --------------------------------------------------------------------------
-# Senha do banco gerada automaticamente e guardada no Secrets Manager.
-# Nunca commitar senha em texto plano no repositório.
-# --------------------------------------------------------------------------
 resource "random_password" "db_password" {
   length           = 20
   special          = true
@@ -44,9 +40,6 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
   })
 }
 
-# --------------------------------------------------------------------------
-# Rede: subnet group a partir das subnets privadas informadas
-# --------------------------------------------------------------------------
 resource "aws_db_subnet_group" "this" {
   name       = "${var.project_name}-${var.environment}-db-subnet-group"
   subnet_ids = var.private_subnet_ids
@@ -58,9 +51,6 @@ resource "aws_db_subnet_group" "this" {
   }
 }
 
-# --------------------------------------------------------------------------
-# Security Group: só libera 5432 a partir do Security Group do EKS
-# --------------------------------------------------------------------------
 resource "aws_security_group" "db" {
   name        = "${var.project_name}-${var.environment}-db-sg"
   description = "Permite acesso ao RDS apenas a partir do cluster EKS"
@@ -88,9 +78,6 @@ resource "aws_security_group" "db" {
   }
 }
 
-# --------------------------------------------------------------------------
-# Parameter Group (opcional, mas facilita ajustes futuros sem recriar o banco)
-# --------------------------------------------------------------------------
 resource "aws_db_parameter_group" "this" {
   name   = "${var.project_name}-${var.environment}-pg-params"
   family = var.db_parameter_group_family
@@ -106,9 +93,6 @@ resource "aws_db_parameter_group" "this" {
   }
 }
 
-# --------------------------------------------------------------------------
-# Instância RDS Postgres
-# --------------------------------------------------------------------------
 resource "aws_db_instance" "this" {
   identifier     = "${var.project_name}-${var.environment}-db"
   engine         = "postgres"
