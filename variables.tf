@@ -16,9 +16,6 @@ variable "environment" {
   default     = "prod"
 }
 
-# --------------------------------------------------------------------------
-# Rede — precisa alinhar com quem cria a VPC/EKS (Repo 3 ou repo de infra base)
-# --------------------------------------------------------------------------
 variable "vpc_id" {
   description = "ID da VPC onde o RDS será criado (mesma VPC do EKS ou uma com rota até ela)"
   type        = string
@@ -34,9 +31,6 @@ variable "eks_security_group_id" {
   type        = string
 }
 
-# --------------------------------------------------------------------------
-# Banco de dados
-# --------------------------------------------------------------------------
 variable "db_name" {
   description = "Nome do banco de dados dentro da instância"
   type        = string
